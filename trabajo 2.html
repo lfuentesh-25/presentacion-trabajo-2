@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Presentación interactiva sobre filtrado digital de señales de audio y convolución discreta.">
+<title>Filtrado digital de señales de audio | Grupo 9</title>
+<style>
+:root{--bg:#071626;--panel:#0b1b2d;--cyan:#4bd8fa;--blue:#169ecb;--white:#f4f8ff;--muted:#b8c8d9;--line:#24435d;--orange:#ffbd69;--green:#7ce3b1}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at 80% 10%,#153451 0,transparent 48%),linear-gradient(140deg,#061321,#102b45);color:var(--white);font-family:Inter,Segoe UI,Arial,sans-serif}button,input{font:inherit}.deck{height:100%;width:100%;position:relative}.slide{position:absolute;inset:0;padding:5.5vh 5.2vw 8vh;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateX(4%);pointer-events:none;transition:opacity .55s ease,transform .55s ease;overflow:auto}.slide.active{opacity:1;transform:none;pointer-events:auto}.eyebrow{display:inline-flex;align-self:flex-start;border:1px solid #22b9e5;border-radius:99px;padding:9px 17px;color:var(--cyan);font-size:clamp(13px,1.5vw,22px);margin-bottom:4vh}.cover h1{font-size:clamp(44px,6.3vw,100px);line-height:1.06;letter-spacing:-.035em;color:var(--cyan);max-width:1000px;margin:0 0 3vh;font-weight:800}.subtitle{font-size:clamp(20px,2.35vw,38px);color:#d5e5f5;margin:0 0 3vh}.equation{background:#071522;border-left:5px solid var(--cyan);border-radius:9px;padding:19px 24px;text-align:center;font-size:clamp(20px,2.6vw,40px);margin:0 0 3vh}.team{border:1px solid var(--line);border-radius:20px;background:#091a2bcc;padding:20px 24px}.team h2{color:var(--cyan);font-size:clamp(22px,2.6vw,40px);margin:0 0 18px}.names{display:grid;grid-template-columns:1fr 1fr;gap:8px 35px;font-size:clamp(15px,1.8vw,28px)}.names p{margin:0}.section-tag{color:var(--cyan);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:13px;margin-bottom:12px}.slide h2{font-size:clamp(32px,4vw,62px);line-height:1.08;margin:0 0 2vh}.lead{font-size:clamp(17px,1.7vw,26px);color:var(--muted);max-width:900px;margin:0 0 3vh}.stage{background:linear-gradient(145deg,#0a1c2e,#0c2238);border:1px solid var(--line);border-radius:22px;padding:clamp(14px,2vw,28px);min-height:270px;position:relative;overflow:hidden}.stage canvas{width:100%;height:clamp(190px,32vh,330px);display:block}.legend{display:flex;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:14px;margin-top:12px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}.controls{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:18px;color:var(--muted)}input[type=range]{accent-color:var(--cyan);width:min(300px,45vw)}.pill{background:#102b43;border:1px solid #28516c;border-radius:99px;padding:8px 13px;color:#d9e9f7}.btn{border:1px solid #2a7899;background:#10334c;color:var(--white);padding:11px 17px;border-radius:12px;cursor:pointer;transition:.2s}.btn:hover,.btn.primary{background:#087da4;border-color:var(--cyan)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}.mini{background:#0b2034;border:1px solid var(--line);border-radius:18px;padding:20px}.mini h3{color:var(--cyan);margin:0 0 10px;font-size:clamp(19px,2vw,28px)}.mini p{color:var(--muted);font-size:clamp(15px,1.35vw,20px);line-height:1.45;margin:0}.math{font-size:clamp(20px,2.4vw,36px);text-align:center;color:#fff;margin:14px 0}.formula{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;font-family:Georgia,serif;font-size:clamp(25px,3.1vw,43px);color:#fff;padding:18px 8px;background:#061522;border:1px solid #28506b;border-radius:16px;margin:12px 0 18px}.formula .sum{font-size:1.55em;line-height:.9;display:inline-flex;flex-direction:column;align-items:center;margin:0 3px}.formula .sum small{font: .28em Arial,sans-serif;line-height:1.1;color:#9fc8dc}.formula .term{color:#65ddff}.formula .out{color:#8ce6b8}.explain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.explain-grid .mini{padding:13px}.explain-grid h3{font-size:17px;margin-bottom:5px}.explain-grid p{font-size:14px}.callout{border:1px solid #2a718e;background:#0a2b40;padding:14px 18px;border-radius:14px;color:#d8eafa;line-height:1.45;margin-top:12px}.numberline{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:12px 0}.sample{min-width:55px;text-align:center;padding:10px 7px;border-radius:10px;background:#102d45;border:1px solid #2d5d78}.sample b{display:block;font-size:20px;color:#fff}.sample small{color:#a9c2d5}.sample.active{border:2px solid #ffbd69;background:#49351f}.sample.result{border:2px solid #7ce3b1}.problem-values{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:14px 0}.problem-values .sample{min-width:68px}.answer-big{font-size:clamp(24px,3vw,40px);color:#8ce6b8;font-weight:800;text-align:center;margin:10px 0}.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}.process-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:14px 0;padding:15px;background:#071a2b;border:1px solid #28506b;border-radius:14px}.process-node{position:relative;padding:12px 16px;border-radius:12px;background:#12314a;border:1px solid #39708d;color:#e8f7ff;font-weight:700;min-width:115px;text-align:center}.process-node.filter-node{border-color:#ffbd69;color:#ffcf8c}.process-arrow{color:#62dafa;font-size:24px;font-weight:800}.process-flow.running .process-node{animation:nodePulse 1.3s ease-in-out infinite alternate}.process-flow.running .process-node:nth-of-type(3){animation-delay:.25s}.process-flow.running .process-node:nth-of-type(5){animation-delay:.5s}.signal-particle{width:9px;height:9px;border-radius:50%;background:#ffbd69;box-shadow:0 0 12px #ffbd69;position:absolute;top:50%;left:0;opacity:0}.process-flow.running .signal-particle{animation:travel 2.2s linear infinite}@keyframes travel{0%{left:3%;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:96%;opacity:0}}@keyframes nodePulse{from{box-shadow:0 0 0 rgba(75,216,250,0)}to{box-shadow:0 0 20px rgba(75,216,250,.28)}}.audio-legend{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0;color:#c5d8e8;font-size:13px}.audio-legend span{display:flex;align-items:center;gap:6px}.audio-legend i{display:inline-block;width:10px;height:10px;border-radius:50%}.filter-concept-canvas{width:100%;height:300px;display:block;background:#061827;border:1px solid #23465e;border-radius:12px;margin:8px 0}.concept-controls{align-items:center;gap:16px;flex-wrap:wrap}.concept-controls label{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.concept-stage>p{font-size:15px;color:#c8d9e8;line-height:1.45}.audio-visual-wrap{border:1px solid #28516c;border-radius:16px;background:#061827;padding:12px 16px;margin:10px 0 12px}.audio-visual-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:#e7f5ff;margin-bottom:4px}.audio-visual-wrap canvas{height:clamp(210px,27vh,280px)!important;width:100%;display:block}.audio-visual-wrap .audio-legend{margin:4px 0 8px}.audio-explain{font-size:14px}@media(max-width:760px){.filter-concept-canvas{height:260px}.concept-controls label{width:100%}}@media(max-height:760px){.filter-concept-canvas{height:230px}.audio-visual-wrap canvas{height:185px!important}.audio-visual-wrap{padding:8px 12px;margin:5px 0}}.audio-explain{margin-top:10px;padding:12px 15px;border-radius:12px;background:#0a2b40;border:1px solid #2a718e;color:#d8eafa;line-height:1.45}.problem-canvas{height:245px}.step-panel{background:#0b2034;border:1px solid #2b526d;border-radius:16px;padding:18px;min-height:150px}.step-panel h3{color:var(--cyan);margin:0 0 10px}.step-panel p{color:#d6e5f3;line-height:1.5;margin:7px 0}.quiz-options{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.quiz-options button{border:1px solid #32718f;background:#102e47;color:white;border-radius:12px;padding:12px 16px;cursor:pointer}.quiz-options button:hover{background:#087da4}.feedback{min-height:50px;color:#cfe6f5;background:#0a2b40;border-radius:12px;padding:13px;margin-top:10px}.problem-canvas{width:100%;height:220px;display:block}@media(max-width:760px){.work-grid{grid-template-columns:1fr}}@media(max-width:760px){.explain-grid{grid-template-columns:1fr 1fr}}.flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:16px 0}.block{background:#102e47;border:1px solid #28617e;border-radius:13px;padding:14px 18px;font-size:clamp(17px,1.8vw,26px)}.arrow{color:var(--cyan);font-size:30px}.steps{display:flex;justify-content:space-between;gap:8px;margin-top:15px}.step{flex:1;text-align:center;padding:10px 5px;border-radius:10px;background:#10253a;color:var(--muted);font-size:13px}.step.on{background:#07516d;color:white;box-shadow:0 0 20px #16bce655}.nav{position:fixed;bottom:20px;left:5.2vw;right:5.2vw;display:flex;align-items:center;justify-content:space-between;z-index:5}.nav button{background:#0d2940;border:1px solid #2b5874;color:white;border-radius:50px;padding:10px 16px;cursor:pointer}.counter{color:#9fb4c8;font-variant-numeric:tabular-nums}.progress{position:fixed;bottom:0;left:0;height:4px;background:var(--cyan);width:0;transition:width .3s;z-index:8}.small{font-size:13px;color:#91a9bd}.visual-label{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:14px}.filebox{border:1px dashed #3c7595;border-radius:14px;padding:18px;text-align:center;color:var(--muted)}input[type=file]{max-width:100%}.audio-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:14px}.audio-row audio{width:min(360px,100%)}.pulse{animation:pulse 2s infinite}@keyframes pulse{0%,100%{filter:drop-shadow(0 0 0 #4bd8fa00)}50%{filter:drop-shadow(0 0 12px #4bd8fa88)}}.bars{height:100px;display:flex;align-items:end;gap:4px}.bars i{flex:1;background:linear-gradient(#55dcfa,#147da9);border-radius:4px 4px 0 0;animation:equalize .8s ease-in-out infinite alternate;transform-origin:bottom}.bars i:nth-child(3n){animation-delay:.2s}.bars i:nth-child(2n){animation-delay:.4s}@keyframes equalize{from{transform:scaleY(.25)}to{transform:scaleY(1)}}@media(max-width:760px){.slide{padding:4vh 5vw 11vh}.grid2{grid-template-columns:1fr}.names{grid-template-columns:1fr}.stage{min-height:230px}.cover h1{font-size:clamp(42px,10vw,72px)}.team{padding:14px}.nav{bottom:12px}}
+
+/* Corrección de desbordamiento: las diapositivas largas deben desplazarse
+   completas y sus paneles no deben comprimirse ni recortar las gráficas. */
+.slide{
+  justify-content:flex-start;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior-y:contain;
+  padding-bottom:110px;
+  scrollbar-width:thin;
+  scrollbar-color:#32718f #071626;
+}
+.slide::-webkit-scrollbar{width:9px}
+.slide::-webkit-scrollbar-track{background:#071626}
+.slide::-webkit-scrollbar-thumb{background:#32718f;border-radius:8px}
+.slide>*{flex-shrink:0}
+.stage{flex-shrink:0}
+.concept-stage{overflow:visible;min-height:0}
+.filter-concept-canvas{flex-shrink:0;min-height:240px}
+@media(max-height:760px){
+  .slide{padding-top:24px;padding-bottom:100px}
+  .filter-concept-canvas{height:260px;min-height:260px}
+}
+@media(max-width:760px){
+  .slide{padding-bottom:100px}
+  .concept-stage{padding:14px}
+  .filter-concept-canvas{height:250px;min-height:250px}
+}
+
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+<section class="slide cover active" aria-label="Portada">
+ <div class="eyebrow">SEÑALES Y SISTEMAS · TRABAJO 2</div>
+ <h1>Filtrado digital<br>de señales de audio</h1>
+ <p class="subtitle">Una aplicación de la convolución discreta</p>
+ <div class="equation">Señal de entrada + filtro digital → señal procesada</div>
+ <div class="team"><h2>Integrantes · Grupo 9</h2><div class="names">
+  <p>• Jaita Almanacin Jhade Nikole</p><p>• Fuentes Huanca Leonela Prixy</p>
+  <p>• Nina Ancco Maritza Nicol</p><p>• Vasquez Gorbeña Christopher Jhon</p>
+ </div></div>
+</section>
+<section class="slide">
+ <div class="section-tag">01 · Antes de filtrar</div><h2>¿Qué es una señal de audio digital?</h2>
+ <p class="lead">El sonido viaja por el aire como una vibración. El micrófono la convierte en una señal eléctrica y el sistema digital toma mediciones de ella muchas veces por segundo.</p>
+ <div class="grid2">
+  <div class="stage"><h3 style="color:var(--cyan)">Del sonido a los números</h3><canvas id="samplingCanvas"></canvas><div class="legend"><span><i class="dot" style="background:#4bd8fa"></i>Señal continua</span><span><i class="dot" style="background:#ffbd69"></i>Muestras</span></div></div>
+  <div class="mini"><h3>Dos conceptos clave</h3><p><b>Muestreo:</b> medir la señal en instantes separados por un intervalo de tiempo.</p><p style="margin-top:12px"><b>Frecuencia de muestreo:</b> número de muestras por segundo. Por ejemplo, 44 100 Hz significa 44 100 muestras cada segundo.</p><div class="callout">El computador procesa esos valores numéricos. Por eso podemos aplicar operaciones matemáticas para modificar el audio.</div></div>
+ </div>
+</section>
+<section class="slide">
+ <div class="section-tag">02 · El problema</div><h2>¿Qué le pasa al audio?</h2><p class="lead">El micrófono capta el sonido… y también el ruido del ambiente.</p>
+ <div class="stage"><div class="visual-label"><span>Señal de audio en el tiempo</span><span id="noiseLabel" class="pill">Ruido: 35 %</span></div><canvas id="noiseCanvas"></canvas><div class="legend"><span><i class="dot" style="background:#4bd8fa"></i>Audio deseado</span><span><i class="dot" style="background:#ffbd69"></i>Audio + ruido</span></div>
+ <div class="controls"><label for="noise">Aumentar ruido</label><input id="noise" type="range" min="0" max="100" value="35"><button class="btn" id="noiseToggle">Reproducir animación</button></div></div>
+</section>
+<section class="slide">
+ <div class="section-tag">03 · La idea clave</div><h2>Filtrar es combinar muestras</h2>
+ <p class="lead">Un audio digital es una secuencia de números llamados muestras. El filtro calcula nuevas muestras a partir de las muestras de entrada y de unos coeficientes.</p>
+ <div class="stage">
+  <div class="formula"><span class="out">y[n]</span><span>=</span><span class="sum"><small>M−1</small>∑<small>k=0</small></span><span class="term">h[k]</span><span>·</span><span class="term">x[n−k]</span></div>
+  <div class="explain-grid">
+   <div class="mini"><h3 style="color:#8ce6b8">y[n]</h3><p>Muestra de salida que queremos calcular.</p></div>
+   <div class="mini"><h3 style="color:#65ddff">x[n−k]</h3><p>Muestras del audio de entrada, tomadas en posiciones cercanas.</p></div>
+   <div class="mini"><h3 style="color:#ffbd69">h[k]</h3><p>Coeficientes o pesos: indican cuánto influye cada muestra.</p></div>
+   <div class="mini"><h3 style="color:#d6b6ff">Σ</h3><p>Sumamos todos los productos para obtener la salida.</p></div>
+  </div>
+  <div class="callout"><b>En palabras sencillas:</b> el filtro toma varias muestras, multiplica cada una por su peso y suma. Después desplaza la ventana y repite el cálculo.</div>
+  <h3 style="color:var(--cyan);margin:18px 0 5px">Ejemplo animado: filtro promedio de 3 muestras</h3>
+  <p class="small">Cada muestra tiene el mismo peso: h[0] = h[1] = h[2] = 1/3.</p>
+  <div class="numberline" id="convNumbers"></div><canvas id="convCanvas"></canvas>
+  <div class="controls"><button class="btn primary" id="prevStep">← Anterior</button><button class="btn primary" id="nextStep">Siguiente cálculo →</button><button class="btn" id="autoStep">▶ Animar paso a paso</button><span class="pill" id="stepLabel">Cálculo 1</span></div>
+  <div class="callout" id="convExplain" aria-live="polite">Avanza para ver cómo se calcula la primera muestra de salida.</div>
+ </div>
+ <p class="small">Esta operación se llama <b>convolución discreta</b> y es una de las bases matemáticas del filtrado digital.</p>
+</section>
+<section class="slide">
+ <div class="section-tag">04 · ¿Qué deja pasar?</div><h2>El filtro selecciona frecuencias</h2><p class="lead">Mueve el control y observa cómo cambia la respuesta de un filtro pasa bajos.</p>
+ <div class="grid2"><div class="stage"><div class="visual-label"><span>Respuesta en frecuencia</span><span id="cutLabel" class="pill">Corte: 1200 Hz</span></div><canvas id="freqCanvas"></canvas><div class="controls"><label for="cut">Frecuencia de corte</label><input id="cut" type="range" min="300" max="4000" value="1200" step="100"></div></div>
+ <div class="mini"><h3>Pasa bajos</h3><p>Deja pasar las frecuencias bajas y atenúa las altas. Es útil para reducir componentes agudas no deseadas.</p><div class="bars" aria-hidden="true"><i style="height:90%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:35%"></i><i style="height:18%"></i><i style="height:8%"></i><i style="height:4%"></i><i style="height:3%"></i><i style="height:2%"></i><i style="height:2%"></i></div><div class="small">Gráfico conceptual de atenuación según frecuencia →</div></div></div>
+</section>
+<section class="slide">
+ <div class="section-tag">05 · Tipos de filtros</div><h2>¿Cómo se construye un filtro digital?</h2>
+ <p class="lead">Dos familias comunes son FIR e IIR. Se diferencian en los valores que utilizan para calcular cada muestra de salida.</p>
+ <div class="grid2">
+  <div class="mini"><h3>FIR · Respuesta finita</h3><p>Utiliza un número finito de muestras de entrada. Su cálculo puede entenderse como una suma ponderada, como la convolución que acabamos de animar.</p><div class="flow"><div class="block">Entrada</div><div class="arrow">→</div><div class="block">Pesos</div><div class="arrow">→</div><div class="block">Salida</div></div><p class="small">Suele ser estable y permite controlar con claridad su respuesta.</p></div>
+  <div class="mini"><h3>IIR · Respuesta infinita</h3><p>Utiliza muestras de entrada y también valores de salida anteriores. Puede lograr ciertos efectos con menos coeficientes, pero su diseño debe cuidar la estabilidad.</p><div class="flow"><div class="block">Entrada</div><div class="arrow">+</div><div class="block">Salidas previas</div><div class="arrow">→</div><div class="block">Salida</div></div><p class="small">Es una estructura muy usada en filtros digitales prácticos.</p></div>
+ </div>
+ <div class="callout"><b>Recuerda:</b> FIR usa una cantidad finita de entradas; IIR reutiliza también salidas anteriores. Ambos permiten modificar el contenido frecuencial del audio.</div>
+</section>
+<section class="slide">
+ <div class="section-tag">06 · Ejemplo de aplicación</div><h2>Un caso de telecomunicaciones</h2>
+ <p class="lead">Imagina que un receptor capta una señal de voz transmitida por un canal. Además de la información útil, aparecen pequeñas variaciones no deseadas.</p>
+ <div class="grid2">
+  <div class="stage"><h3 style="color:var(--cyan)">¿Qué recibe el sistema?</h3><div class="bars" style="height:145px"><i style="height:42%"></i><i style="height:68%"></i><i style="height:51%"></i><i style="height:82%"></i><i style="height:45%"></i><i style="height:72%"></i><i style="height:36%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:77%"></i><i style="height:39%"></i><i style="height:66%"></i></div><div class="small">Representación ilustrativa de muestras recibidas.</div></div>
+  <div class="mini"><h3>¿Qué buscamos?</h3><p>Reducir variaciones rápidas que no pertenecen a la información útil, sin deformar demasiado la señal que queremos recuperar.</p><div class="callout"><b>Herramienta:</b> un filtro digital combina muestras siguiendo una regla matemática. En este ejemplo usaremos un filtro promedio de tres muestras.</div></div>
+ </div>
+</section>
+<section class="slide">
+ <div class="section-tag">07 · Problema propuesto</div><h2>Vamos a resolverlo</h2>
+ <p class="lead">Un receptor digital obtiene cinco muestras de una señal de audio. Para suavizar variaciones rápidas, se aplica un filtro promedio de tres muestras.</p>
+ <div class="stage">
+  <h3 style="color:var(--cyan)">Datos del problema</h3>
+  <div class="problem-values">
+   <div class="sample"><small>x[0]</small><b>2</b></div><div class="sample"><small>x[1]</small><b>8</b></div><div class="sample"><small>x[2]</small><b>10</b></div><div class="sample"><small>x[3]</small><b>5</b></div><div class="sample"><small>x[4]</small><b>4</b></div>
+  </div>
+  <div class="grid2">
+   <div class="mini"><h3>Filtro utilizado</h3><p>Los tres coeficientes tienen el mismo valor:</p><div class="math">h[0]=h[1]=h[2]=1/3</div><p>Por tanto, el filtro calcula el promedio de tres muestras consecutivas.</p></div>
+   <div class="mini"><h3>Se pide</h3><p>Calcular las muestras de salida usando la convolución discreta y explicar qué efecto tiene el filtro sobre la señal.</p><div class="callout">Usaremos la ecuación: y[n] = Σ h[k] · x[n−k].</div></div>
+  </div>
+ </div>
+</section>
+<section class="slide">
+ <div class="section-tag">08 · Resolución interactiva</div><h2>Calcula la salida paso a paso</h2>
+ <p class="lead">Avanza por los tres cálculos. Observa cómo la ventana toma tres muestras y se desplaza una posición cada vez.</p>
+ <div class="stage">
+  <div class="work-grid">
+   <div><h3 style="color:var(--cyan)">Muestras de entrada</h3><div class="problem-values" id="problemInput"></div><canvas id="problemCanvas" class="problem-canvas"></canvas></div>
+   <div class="step-panel"><h3 id="problemStepTitle">Cálculo 1 de 3</h3><p id="problemEquation">y[2] = (2 + 8 + 10) / 3</p><div class="answer-big" id="problemAnswer">= 6.67</div><p id="problemExplanation">Se promedian las tres primeras muestras.</p></div>
+  </div>
+  <div class="controls"><button class="btn" id="problemPrev">← Anterior</button><button class="btn primary" id="problemNext">Siguiente cálculo →</button><button class="btn" id="problemAuto">▶ Resolver automáticamente</button><span class="pill" id="problemCounter">1 / 3</span></div>
+ </div>
+</section>
+<section class="slide">
+ <div class="section-tag">09 · Interpretación del resultado</div><h2>¿Qué conseguimos con el filtro?</h2>
+ <p class="lead">Comparamos las muestras originales con los valores calculados por el filtro promedio.</p>
+ <div class="stage">
+  <div class="grid2">
+   <div class="mini"><h3>Entrada</h3><div class="problem-values"><div class="sample"><b>2</b><small>x[0]</small></div><div class="sample"><b>8</b><small>x[1]</small></div><div class="sample"><b>10</b><small>x[2]</small></div><div class="sample"><b>5</b><small>x[3]</small></div><div class="sample"><b>4</b><small>x[4]</small></div></div></div>
+   <div class="mini"><h3>Salida filtrada</h3><div class="problem-values"><div class="sample result"><b>6.67</b><small>y[2]</small></div><div class="sample result"><b>7.67</b><small>y[3]</small></div><div class="sample result"><b>6.33</b><small>y[4]</small></div></div></div>
+  </div>
+  <div class="callout"><b>Interpretación:</b> los valores de salida son más uniformes porque cada uno es un promedio de tres muestras. El filtro suaviza cambios rápidos.</div>
+  <div class="callout"><b>Limitación importante:</b> un promedio móvil no elimina cualquier ruido. Si el ruido ocupa frecuencias similares a la señal útil, también puede afectar la información que queremos conservar. Además, suavizar demasiado puede borrar cambios rápidos importantes.</div>
+ </div>
+</section>
+<section class="slide">
+ <div class="section-tag">10 · Comprueba lo aprendido</div><h2>Una pregunta para ti</h2>
+ <p class="lead">Si aumentamos el número de muestras que promedia un filtro de media móvil, ¿qué suele ocurrir?</p>
+ <div class="stage">
+  <div class="quiz-options">
+   <button data-answer="a">A. La señal suele suavizarse más.</button>
+   <button data-answer="b">B. El filtro deja pasar todas las frecuencias sin cambios.</button>
+   <button data-answer="c">C. Desaparece cualquier tipo de ruido.</button>
+  </div>
+  <div class="feedback" id="quizFeedback">Elige una respuesta para comprobar tu comprensión.</div>
+ </div>
+</section>
+<section class="slide">
+ <div class="section-tag">11 · Escúchalo</div><h2>Prueba con tu propio audio</h2><p class="lead">Carga un archivo de audio y compara el sonido original con una versión filtrada. El pasa bajos atenúa agudos, el pasa altos atenúa graves y el pasa banda conserva una zona intermedia.</p>
+ <div class="stage concept-stage">
+  <h3 style="color:var(--cyan)">Antes de usar tu audio: ¿qué hace un filtro?</h3>
+  <p>Una señal puede estar formada por sonidos graves y agudos al mismo tiempo. El filtro decide qué parte conserva y qué parte reduce.</p>
+  <div class="audio-row concept-controls">
+   <label>Tipo de filtro <select id="demoFilter" class="pill"><option value="lowpass">Pasa bajos</option><option value="highpass">Pasa altos</option><option value="bandpass">Pasa banda</option></select></label>
+   <label>Frecuencia de corte <input id="demoCut" type="range" min="3" max="15" value="6" step="1"> <span class="pill" id="demoCutLabel">6 unidades</span></label>
+   <button class="btn" id="demoPause">Ⅱ Pausar animación</button>
+  </div>
+  <div class="audio-legend"><span><i style="background:#4bd8fa"></i>Componente grave</span><span><i style="background:#ffbd69"></i>Componente aguda</span><span><i style="background:#8ce6b8"></i>Resultado del filtro</span></div>
+  <canvas id="filterConceptCanvas" class="filter-concept-canvas"></canvas>
+  <div class="audio-explain" id="demoExplain"><b>Observa:</b> la señal de entrada combina una onda lenta (grave) y una onda rápida (aguda). El filtro pasa bajos conserva la componente grave y reduce la aguda. Cambia el tipo de filtro para comparar.</div>
+ </div>
+ <div class="stage"><div class="filebox"><input type="file" id="audioFile" accept="audio/*"><p class="small">Selecciona un archivo WAV, MP3 u otro formato compatible con tu navegador.</p></div><div class="audio-row"><button class="btn primary" id="playOriginal" disabled>▶ Audio original</button><button class="btn" id="playFiltered" disabled>▶ Audio filtrado</button><label>Tipo de filtro <select id="filterType" class="pill"><option value="lowpass">Pasa bajos</option><option value="highpass">Pasa altos</option><option value="bandpass">Pasa banda</option></select></label></div><div class="controls"><label for="liveCut">Frecuencia de corte</label><input id="liveCut" type="range" min="200" max="8000" value="1800" step="100"><span class="pill" id="liveCutLabel">1800 Hz</span></div><div class="audio-visual-wrap">
+  <div class="audio-visual-title"><b>Así cambia la señal</b><span class="small">Comparación real antes y después del filtro</span></div>
+  <div class="audio-legend"><span><i style="background:#4bd8fa"></i>Audio original</span><span><i style="background:#8ce6b8"></i>Audio filtrado</span><span><i style="background:#ffbd69"></i>Posición de reproducción</span></div>
+  <canvas id="audioCanvas" aria-label="Comparación de las formas de onda original y filtrada"></canvas>
+ </div>
+ <div class="process-flow" id="audioProcess"><div class="process-node">Audio original</div><span class="process-arrow">→</span><div class="process-node filter-node">Filtro digital</div><span class="process-arrow">→</span><div class="process-node">Audio filtrado</div></div>
+ <div class="audio-explain" id="audioExplain">Al cargar un archivo aparecerán dos gráficos: arriba el audio original y abajo el resultado procesado. Al reproducirlo, una línea recorrerá ambas señales.</div><p class="small" id="audioStatus">Aún no se ha cargado un archivo.</p></div>
+</section>
+<section class="slide">
+ <div class="section-tag">12 · Aplicaciones y cierre</div><h2>De una señal ruidosa a una señal útil</h2><p class="lead">El filtrado digital permite modificar el contenido frecuencial del audio para mejorar su utilidad en distintas aplicaciones.</p>
+ <div class="flow"><div class="block">Audio captado</div><div class="arrow">→</div><div class="block">Muestreo</div><div class="arrow">→</div><div class="block">Convolución</div><div class="arrow">→</div><div class="block">Audio filtrado</div></div>
+ <div class="grid2"><div class="mini"><h3>Telecomunicaciones</h3><p>Reducción de ruido en voz, comunicaciones móviles y sistemas de transmisión.</p></div><div class="mini"><h3>Procesamiento de audio</h3><p>Ecualización, eliminación de componentes no deseadas y mejora de grabaciones.</p></div></div>
+ <div class="callout"><b>Idea final:</b> filtrar no significa borrar automáticamente todo el ruido. Significa diseñar un sistema que atenúe frecuencias no deseadas y conserve, en lo posible, la información importante.</div><p class="math pulse" style="color:var(--cyan)">¡Gracias por su atención!</p>
+</section>
+</main>
+<div class="nav"><button id="back">← Anterior</button><span class="counter" id="counter">1 / 6 · Usa ← →</span><button id="forward">Siguiente →</button></div><div class="progress" id="progress"></div>
+<script>
+(()=>{
+const slides=[...document.querySelectorAll('.slide')];let current=0;const $=id=>document.getElementById(id);
+function go(n){current=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('active',i===current));$('counter').textContent=`${current+1} / ${slides.length} · Usa ← →`;$('progress').style.width=((current+1)/slides.length*100)+'%';$('back').disabled=current===0;$('forward').disabled=current===slides.length-1}
+$('back').onclick=()=>go(current-1);$('forward').onclick=()=>go(current+1);document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(current+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(current-1)}});go(0);
+const setup=(id)=>{const c=$(id),ctx=c.getContext('2d');function size(){const r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=Math.max(1,r.width*d);c.height=Math.max(1,r.height*d);ctx.setTransform(d,0,0,d,0,0)}size();new ResizeObserver(size).observe(c);return {c,ctx,w:()=>c.clientWidth,h:()=>c.clientHeight}};
+const noise=setup('noiseCanvas');let noiseAmt=35,phase=0,noiseRun=true;$('noise').oninput=e=>{noiseAmt=+e.target.value;$('noiseLabel').textContent=`Ruido: ${noiseAmt} %`};$('noiseToggle').onclick=()=>{noiseRun=!noiseRun;$('noiseToggle').textContent=noiseRun?'Pausar animación':'Reproducir animación'};
+function drawNoise(){const {ctx,w,h}=noise;ctx.clearRect(0,0,w(),h());const W=w(),H=h(),mid=H/2;ctx.strokeStyle='#28455e';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,mid);ctx.lineTo(W,mid);ctx.stroke();for(let j=0;j<2;j++){ctx.beginPath();ctx.lineWidth=j?2:3;ctx.strokeStyle=j?'#ffbd69':'#4bd8fa';for(let x=0;x<W;x++){let t=x/W*9+phase;let clean=Math.sin(t*2.1)*.36+Math.sin(t*4.3)*.12;let v=j?clean+(Math.sin(x*1.71+phase*9)*.22+Math.sin(x*.37+phase*4)*.14)*noiseAmt/35:clean;let y=mid-v*H*.75;x?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}if(noiseRun)phase+=.018;requestAnimationFrame(drawNoise)}drawNoise();
+// Convolución: ventana de tres muestras y suma ponderada.
+const conv=setup('convCanvas'),xv=[0.2,0.8,1.0,0.5,-0.2,-0.7,-0.3,0.4,0.8],kernel=[1/3,1/3,1/3];
+let step=0,auto=null;const total=xv.length-2;
+$('convNumbers').innerHTML=xv.map((v,i)=>`<div class="sample" id="sample${i}"><small>x[${i}]</small><b>${v.toFixed(1)}</b></div>`).join('');
+function drawConv(){const {ctx,w,h}=conv,W=w(),H=h();ctx.clearRect(0,0,W,H);const base=H*.72,top=H*.16,dx=W/(xv.length+1),barW=Math.min(34,dx*.5);
+ ctx.strokeStyle='#36536b';ctx.beginPath();ctx.moveTo(0,base);ctx.lineTo(W,base);ctx.stroke();
+ xv.forEach((v,i)=>{const x=dx*(i+1),y=base-v*(H*.43);ctx.fillStyle=(i>=step&&i<=step+2)?'#ffbd69':'#4bd8fa';ctx.fillRect(x-barW/2,Math.min(base,y),barW,Math.max(2,Math.abs(v)*(H*.43)));ctx.fillStyle='#c8d8e8';ctx.font='12px Arial';ctx.textAlign='center';ctx.fillText(`x[${i}]`,x,H-7)});
+ const parts=[0,1,2].map(k=>xv[step+k]*kernel[k]),sum=parts.reduce((a,b)=>a+b,0);
+ ctx.fillStyle='#ffbd69';ctx.font='bold 14px Arial';ctx.textAlign='center';ctx.fillText('Ventana seleccionada: 3 muestras',W/2,top);
+ ctx.strokeStyle='#7ce3b1';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(dx*(step+1),top+12);ctx.lineTo(dx*(step+3),top+12);ctx.stroke();
+ $('stepLabel').textContent=`Cálculo ${step+1} de ${total}`;
+ xv.forEach((_,i)=>{const el=$(`sample${i}`);el.classList.toggle('active',i>=step&&i<=step+2);el.classList.toggle('result',i===step+3)});
+ $('convExplain').innerHTML=`<b>y[${step+2}] = </b> (${xv[step].toFixed(1)} × 1/3) + (${xv[step+1].toFixed(1)} × 1/3) + (${xv[step+2].toFixed(1)} × 1/3) = <b style="color:#8ce6b8">${sum.toFixed(2)}</b>. Cada muestra aporta un tercio. Ahora desplazamos la ventana una posición.`;
+}
+function setStep(s){step=(s+total)%total;drawConv()}
+$('prevStep').onclick=()=>setStep(step-1);$('nextStep').onclick=()=>setStep(step+1);
+$('autoStep').onclick=()=>{if(auto){clearInterval(auto);auto=null;$('autoStep').textContent='▶ Animar paso a paso'}else{auto=setInterval(()=>setStep(step+1),1500);$('autoStep').textContent='Ⅱ Pausar'}};
+drawConv();
+// Animación: una señal continua y los instantes en que se toman muestras.
+const sampling=setup('samplingCanvas');let samplePhase=0;
+function drawSampling(){const {ctx,w,h}=sampling,W=w(),H=h(),mid=H*.55;ctx.clearRect(0,0,W,H);
+ ctx.strokeStyle='#34516a';ctx.beginPath();ctx.moveTo(0,mid);ctx.lineTo(W,mid);ctx.stroke();
+ ctx.strokeStyle='#4bd8fa';ctx.lineWidth=2.5;ctx.beginPath();for(let x=0;x<W;x++){const t=x/W*6.28,y=mid-Math.sin(t*2+samplePhase)*H*.27;x?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();
+ for(let i=0;i<18;i++){const x=(i+.5)*W/18,t=x/W*6.28,y=mid-Math.sin(t*2+samplePhase)*H*.27;ctx.fillStyle='#ffbd69';ctx.beginPath();ctx.arc(x,y,4.5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(x,mid);ctx.lineTo(x,y);ctx.strokeStyle='#ffbd6988';ctx.stroke()}
+ samplePhase+=.012;requestAnimationFrame(drawSampling)}
+drawSampling();
+// Low-pass response curve.
+const freq=setup('freqCanvas');let cutoff=1200;$('cut').oninput=e=>{cutoff=+e.target.value;$('cutLabel').textContent=`Corte: ${cutoff} Hz`;drawFreq()};function drawFreq(){const {ctx,w,h}=freq,W=w(),H=h();ctx.clearRect(0,0,W,H);let left=45,right=W-12,top=14,bottom=H-30;ctx.strokeStyle='#34516a';ctx.lineWidth=1;for(let i=0;i<=4;i++){let y=top+(bottom-top)*i/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke()}ctx.fillStyle='#a9bdcf';ctx.font='12px Arial';ctx.fillText('0 dB',4,top+4);ctx.fillText('−40',8,bottom+4);ctx.fillText('Frecuencia →',W-100,H-5);let fcX=left+(cutoff/5000)*(right-left);ctx.beginPath();ctx.strokeStyle='#4bd8fa';ctx.lineWidth=3;for(let x=left;x<=right;x++){let f=(x-left)/(right-left)*5000;let db=-10*Math.log10(1+(f/cutoff)**4);let y=top+(-db/40)*(bottom-top);x===left?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.stroke();ctx.setLineDash([5,5]);ctx.strokeStyle='#ffbd69';ctx.beginPath();ctx.moveTo(fcX,top);ctx.lineTo(fcX,bottom);ctx.stroke();ctx.setLineDash([])}drawFreq();
+// Problema guiado: la ventana se desplaza y la muestra de salida se construye animadamente.
+const px=[2,8,10,5,4],py=[(2+8+10)/3,(8+10+5)/3,(10+5+4)/3];
+let pstep=0,pauto=null,pAnim=1,pAnimFrame=null;const pc=setup('problemCanvas');
+$('problemInput').innerHTML=px.map((v,i)=>`<div class="sample" id="pinput${i}"><small>x[${i}]</small><b>${v}</b></div>`).join('');
+function drawProblem(){const {ctx,w,h}=pc,W=w(),H=h();ctx.clearRect(0,0,W,H);const base=H*.76,dx=W/6,bw=Math.min(42,dx*.48),max=11;
+ ctx.strokeStyle='#38556d';ctx.beginPath();ctx.moveTo(0,base);ctx.lineTo(W,base);ctx.stroke();
+ px.forEach((v,i)=>{const x=dx*(i+1),bh=v/max*(H*.55);ctx.fillStyle=i>=pstep&&i<=pstep+2?'#ffbd69':'#4bd8fa';ctx.fillRect(x-bw/2,base-bh,bw,bh);ctx.fillStyle='#c8d8e8';ctx.font='12px Arial';ctx.textAlign='center';ctx.fillText(`x[${i}]`,x,H-5)});
+ // Ventana animada: se desplaza desde el bloque anterior y se asienta sobre las tres muestras actuales.
+ const from=pstep===0?0:pstep-1,to=pstep,slide=from+(to-from)*pAnim;
+ const left=dx*(slide+1)-bw*.72,right=dx*(slide+3)+bw*.72;
+ ctx.save();ctx.strokeStyle='#7ce3b1';ctx.lineWidth=3;ctx.shadowColor='#7ce3b1';ctx.shadowBlur=12;ctx.strokeRect(left,base-H*.68,right-left,H*.68);ctx.restore();
+ // Los tres pesos aparecen uno por uno y se combinan en la salida.
+ const outX=W-dx*.52,outTop=H*.18,outBase=base;
+ ctx.fillStyle='#a9c2d5';ctx.font='12px Arial';ctx.textAlign='center';ctx.fillText('SALIDA',outX,H-5);
+ const bh=py[pstep]/max*(H*.55)*pAnim;
+ ctx.fillStyle='#8ce6b8';ctx.fillRect(outX-bw*.45,outBase-bh,bw*.9,bh);
+ ctx.fillStyle='#dfffee';ctx.font='bold 13px Arial';ctx.fillText(pAnim>=.98?py[pstep].toFixed(2):'calculando…',outX,Math.max(15,outBase-bh-8));
+ ctx.fillStyle='#ffcf8c';ctx.font='12px Arial';ctx.fillText('× 1/3',dx*(slide+1),H*.12);ctx.fillText('× 1/3',dx*(slide+2),H*.12);ctx.fillText('× 1/3',dx*(slide+3),H*.12);
+}
+function animateProblem(){if(pAnimFrame)cancelAnimationFrame(pAnimFrame);pAnim=0;const started=performance.now(),duration=950;
+ function frame(now){pAnim=Math.min(1,(now-started)/duration);drawProblem();if(pAnim<1)pAnimFrame=requestAnimationFrame(frame)}
+ pAnimFrame=requestAnimationFrame(frame)}
+function showProblem(animate=true){const vals=px.slice(pstep,pstep+3),n=pstep+2,sum=py[pstep];$('problemStepTitle').textContent=`Cálculo ${pstep+1} de 3`;
+ $('problemEquation').innerHTML=`y[${n}] = (${vals[0]} × 1/3) + (${vals[1]} × 1/3) + (${vals[2]} × 1/3)`;
+ $('problemAnswer').textContent=`= ${sum.toFixed(2)}`;
+ $('problemExplanation').textContent=`Observa la ventana: selecciona tres muestras, aplica el peso 1/3 a cada una y suma. La barra verde crece para representar el valor de salida.`;
+ $('problemCounter').textContent=`${pstep+1} / 3`;
+ px.forEach((_,i)=>{const el=$(`pinput${i}`);el.classList.toggle('active',i>=pstep&&i<=pstep+2)});
+ if(animate)animateProblem();else{pAnim=1;drawProblem()}}
+function setProblem(s){pstep=(s+3)%3;showProblem(true)}
+$('problemPrev').onclick=()=>setProblem(pstep-1);$('problemNext').onclick=()=>setProblem(pstep+1);
+$('problemAuto').onclick=()=>{if(pauto){clearInterval(pauto);pauto=null;$('problemAuto').textContent='▶ Resolver automáticamente'}else{pauto=setInterval(()=>setProblem(pstep+1),2200);$('problemAuto').textContent='Ⅱ Pausar resolución'}};
+showProblem(true);
+document.querySelectorAll('.quiz-options button').forEach(b=>b.onclick=()=>{$('quizFeedback').textContent=b.dataset.answer==='a'?'¡Correcto! Al promediar más muestras, la salida suele ser más suave, aunque puede perder cambios rápidos de la señal.':'No exactamente. Recuerda que un promedio combina muestras cercanas. La opción correcta es A: suele suavizar más la señal.'});
+// Animación didáctica: una señal compuesta por una frecuencia grave y otra aguda.
+const demoCanvas=setup('filterConceptCanvas');let demoPhase=0,demoRunning=true,demoRAF=null;
+function demoFactors(){
+ const type=$('demoFilter').value,cut=+$('demoCut').value;
+ // Frecuencias ilustrativas: grave=2 unidades, aguda=10 unidades.
+ const low=type==='highpass'?Math.min(1,cut/2):type==='bandpass'?(cut>=2&&cut<=10?1:.15):1;
+ const high=type==='lowpass'?(cut>=10?1:Math.max(.06,cut/10)):type==='highpass'?(cut>=10?1:Math.max(.06,(10-cut)/8)):(cut>=2&&cut<=10?1:.12);
+ return {low,high,type,cut};
+}
+function drawConcept(){
+ const {ctx,w,h}=demoCanvas,W=w(),H=h();ctx.clearRect(0,0,W,H);
+ const f=demoFactors(),rows=[{name:'Grave (lenta)',color:'#4bd8fa',fn:x=>Math.sin(x*2+demoPhase),amp:1},{name:'Aguda (rápida)',color:'#ffbd69',fn:x=>Math.sin(x*10+demoPhase),amp:1},{name:'Entrada = grave + aguda',color:'#d6e5f3',fn:x=>Math.sin(x*2+demoPhase)+Math.sin(x*10+demoPhase),amp:1},{name:'Salida del filtro',color:'#8ce6b8',fn:x=>f.low*Math.sin(x*2+demoPhase)+f.high*Math.sin(x*10+demoPhase),amp:1}];
+ const top=8,rowH=(H-16)/4;
+ rows.forEach((r,ri)=>{
+  const y0=top+ri*rowH,mid=y0+rowH*.53,amp=rowH*(ri===2||ri===3?.30:.34);
+  ctx.fillStyle='#a9c2d5';ctx.font='12px Arial';ctx.textAlign='left';ctx.fillText(r.name,9,y0+14);
+  ctx.strokeStyle='#294760';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,mid);ctx.lineTo(W,mid);ctx.stroke();
+  ctx.strokeStyle=r.color;ctx.lineWidth=2;ctx.beginPath();
+  for(let x=0;x<W;x++){const t=x/W*Math.PI*4;const yy=mid-r.fn(t)*amp*(ri>=2?.5:1);x?ctx.lineTo(x,yy):ctx.moveTo(x,yy)}
+  ctx.stroke();
+ });
+ ctx.fillStyle='#9fb5c8';ctx.font='11px Arial';ctx.textAlign='right';ctx.fillText('Tiempo →',W-8,H-4);
+}
+function demoLoop(){if(!demoRunning)return;demoPhase+=.045;drawConcept();demoRAF=requestAnimationFrame(demoLoop)}
+function updateDemo(){
+ const f=demoFactors();$('demoCutLabel').textContent=f.cut+' unidades';
+ const pct=Math.round((f.low+f.high)/2*100);
+ let msg='';
+ if(f.type==='lowpass')msg=`PASA BAJOS: deja pasar las variaciones lentas (graves) y reduce las rápidas (agudos). En este ejemplo conserva la onda grave al ${Math.round(f.low*100)}% y la aguda al ${Math.round(f.high*100)}%.`;
+ if(f.type==='highpass')msg=`PASA ALTOS: reduce las variaciones lentas (graves) y deja pasar las rápidas (agudos). En este ejemplo conserva la onda grave al ${Math.round(f.low*100)}% y la aguda al ${Math.round(f.high*100)}%.`;
+ if(f.type==='bandpass')msg=`PASA BANDA: conserva las frecuencias que están dentro de una zona y reduce las que quedan fuera. Este dibujo es conceptual: observa cómo cambia la mezcla al mover el control.`;
+ $('demoExplain').textContent=msg;drawConcept();
+}
+$('demoFilter').onchange=updateDemo;$('demoCut').oninput=updateDemo;
+$('demoPause').onclick=()=>{demoRunning=!demoRunning;$('demoPause').textContent=demoRunning?'Ⅱ Pausar animación':'▶ Reproducir animación';if(demoRunning)demoLoop();else if(demoRAF)cancelAnimationFrame(demoRAF)};
+updateDemo();demoLoop();
+// Laboratorio de audio: dos formas de onda reales y cursor animado durante la reproducción.
+let audioCtx=null,buffer=null,filteredBuffer=null,source=null,renderToken=0;
+let playStartedAt=0,playDuration=0,playRAF=null,isPlaying=false;
+const ac=setup('audioCanvas');
+function drawAudio(){
+ const {ctx,w,h}=ac,W=w(),H=h();ctx.clearRect(0,0,W,H);
+ const panelH=H/2,topPad=18,bottomPad=14;
+ function drawWave(buf,color,top,label,progress){
+  const mid=top+panelH*.52,amp=panelH*.34;
+  ctx.fillStyle='#a9c2d5';ctx.font='12px Arial';ctx.textAlign='left';ctx.fillText(label,10,top+13);
+  ctx.strokeStyle='#294760';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,mid);ctx.lineTo(W,mid);ctx.stroke();
+  if(buf){
+   const data=buf.getChannelData(0),samplesPerPixel=Math.max(1,Math.floor(data.length/W));
+   ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();
+   for(let x=0;x<W;x++){
+    const from=x*samplesPerPixel,to=Math.min(data.length,from+samplesPerPixel);
+    let mn=1,mx=-1;
+    for(let j=from;j<to;j++){const v=data[j];if(v<mn)mn=v;if(v>mx)mx=v}
+    const y1=mid-mx*amp,y2=mid-mn*amp;
+    ctx.moveTo(x,y1);ctx.lineTo(x,y2);
+   }
+   ctx.stroke();
+   if(progress!==null){
+    const px=progress*W;ctx.strokeStyle='#ffbd69';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px,top+18);ctx.lineTo(px,top+panelH-5);ctx.stroke();
+    ctx.fillStyle='#ffbd69';ctx.beginPath();ctx.arc(px,top+18,4,0,Math.PI*2);ctx.fill();
+   }
+  }else{
+   ctx.fillStyle='#829bb0';ctx.font='13px Arial';ctx.textAlign='center';
+   ctx.fillText('Carga un audio para ver esta señal',W/2,mid+5);
+  }
+ }
+ const progress=isPlaying&&playDuration>0?Math.min(1,(audioCtx.currentTime-playStartedAt)/playDuration):null;
+ drawWave(buffer,'#4bd8fa',0,'1. AUDIO ORIGINAL',progress);
+ drawWave(filteredBuffer,'#8ce6b8',panelH,'2. AUDIO FILTRADO',progress);
+ ctx.fillStyle='#829bb0';ctx.font='10px Arial';ctx.textAlign='right';ctx.fillText('Tiempo →',W-8,H-2);
+}
+drawAudio();
+function animatePlayback(){
+ if(!isPlaying)return;
+ drawAudio();
+ if(audioCtx.currentTime-playStartedAt>=playDuration){isPlaying=false;drawAudio();return}
+ playRAF=requestAnimationFrame(animatePlayback);
+}
+async function buildFilteredPreview(){
+ if(!buffer)return;
+ const token=++renderToken;
+ $('audioStatus').textContent='Procesando el archivo para generar la señal filtrada…';
+ try{
+  const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  if(!Offline)throw new Error('El navegador no admite OfflineAudioContext');
+  const off=new Offline(buffer.numberOfChannels,buffer.length,buffer.sampleRate);
+  const src=off.createBufferSource();src.buffer=buffer;
+  const biq=off.createBiquadFilter();biq.type=$('filterType').value;
+  biq.frequency.value=Math.min(+$('liveCut').value,buffer.sampleRate/2-1);biq.Q.value=.707;
+  src.connect(biq);biq.connect(off.destination);src.start();
+  const result=await off.startRendering();
+  if(token!==renderToken)return;
+  filteredBuffer=result;drawAudio();
+  const kind=biq.type==='lowpass'?'pasa bajos':biq.type==='highpass'?'pasa altos':'pasa banda';
+  $('audioStatus').textContent=`Procesamiento terminado · ${buffer.duration.toFixed(2)} s · ${buffer.sampleRate} Hz · ${kind} · corte ${Math.round(biq.frequency.value)} Hz`;
+  $('audioExplain').innerHTML=`<b>Compara las dos ondas:</b> la celeste es el audio original y la verde es el resultado real del filtro. El filtro <b>${kind}</b> modifica las componentes de frecuencia; la diferencia visual depende del contenido de tu grabación y de la frecuencia de corte. Pulsa “Audio original” o “Audio filtrado” para observar cómo avanza el cursor en ambos gráficos.`;
+  $('audioProcess').classList.add('running');
+ }catch(err){
+  $('audioStatus').textContent='No se pudo procesar el archivo en este navegador. Prueba con Chrome o Edge actualizado y un WAV o MP3.';
+  console.error(err);
+ }
+}
+$('audioFile').onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{
+  audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')await audioCtx.resume();
+  const arr=await f.arrayBuffer();buffer=await audioCtx.decodeAudioData(arr);filteredBuffer=null;
+  isPlaying=false;
+  $('audioStatus').textContent=`Archivo cargado: ${f.name} · generando comparación…`;
+  $('audioExplain').textContent='El audio se cargó correctamente. Estamos calculando una segunda versión mediante el filtro seleccionado.';
+  $('playOriginal').disabled=false;$('playFiltered').disabled=false;
+  drawAudio();await buildFilteredPreview();
+ }catch(err){$('audioStatus').textContent='No se pudo leer el archivo. Prueba con WAV o MP3.';console.error(err)}
+};
+function play(filtered){
+ if(!buffer)return;
+ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+ if(audioCtx.state==='suspended')audioCtx.resume();
+ if(source){try{source.stop()}catch(e){}}
+ if(playRAF)cancelAnimationFrame(playRAF);
+ source=audioCtx.createBufferSource();
+ source.buffer=filtered&&filteredBuffer?filteredBuffer:buffer;
+ source.connect(audioCtx.destination);
+ playDuration=source.buffer.duration;source.onended=()=>{isPlaying=false;drawAudio()};
+ source.start();
+ playStartedAt=audioCtx.currentTime;isPlaying=true;
+ animatePlayback();
+}
+$('playOriginal').onclick=()=>play(false);
+$('playFiltered').onclick=()=>play(true);
+$('liveCut').oninput=async e=>{$('liveCutLabel').textContent=e.target.value+' Hz';if(buffer)await buildFilteredPreview()};
+$('filterType').onchange=async()=>{if(buffer)await buildFilteredPreview()};
+
+})();
+</script>
+</body></html>
